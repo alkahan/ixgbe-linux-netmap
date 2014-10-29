@@ -147,6 +147,8 @@ ifeq ($(ARCH),ppc64)
 endif
 
 # extra flags for module builds
+# ENABLE NETMAP, ODINTSOV PAVEL
+EXTRA_CFLAGS += -DCONFIG_NETMAP
 EXTRA_CFLAGS += -DDRIVER_$(shell echo $(DRIVER_NAME) | tr '[a-z]' '[A-Z]')
 EXTRA_CFLAGS += -DDRIVER_NAME=$(DRIVER_NAME)
 EXTRA_CFLAGS += -DDRIVER_NAME_CAPS=$(shell echo $(DRIVER_NAME) | tr '[a-z]' '[A-Z]')
