@@ -67,6 +67,10 @@
  * It also defines DEV_NETMAP so further conditional sections use
  * that instead of CONFIG_NETMAP
  */
+
+// Fix from Pavel Odintsov, it's workaround for smartless configure script from netmap
+#define NETMAP_LINUX_IXGBE_DESC 3
+
 #include <ixgbe_netmap_linux.h>
 #endif
 
