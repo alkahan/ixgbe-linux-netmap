@@ -9804,10 +9804,6 @@ no_info_string:
 	e_info(probe, "Intel(R) 10 Gigabit Network Connection\n");
 	cards_found++;
 
-#ifdef DEV_NETMAP
-	ixgbe_netmap_attach(adapter);
-#endif /* DEV_NETMAP */
-
 #ifdef IXGBE_SYSFS
 	if (ixgbe_sysfs_init(adapter))
 		e_err(probe, "failed to allocate sysfs resources\n");
@@ -9827,6 +9823,11 @@ no_info_string:
 		hw->mac.ops.setup_link(hw,
 			IXGBE_LINK_SPEED_10GB_FULL | IXGBE_LINK_SPEED_1GB_FULL,
 			true);
+
+#ifdef DEV_NETMAP
+	// In modern patches this code located in the function end
+        ixgbe_netmap_attach(adapter);
+#endif /* DEV_NETMAP */
 
 	return 0;
 
