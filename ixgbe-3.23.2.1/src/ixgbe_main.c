@@ -2242,7 +2242,7 @@ static int ixgbe_clean_rx_irq(struct ixgbe_q_vector *q_vector,
          * Same as the txeof routine: only wakeup clients on intr.
          */
         int dummy;
-        if (netmap_rx_irq(adapter->netdev, rx_ring->queue_index, &dummy))
+        if (netmap_rx_irq(rx_ring->netdev, rx_ring->queue_index, &dummy))
                 return true; 
 #endif /* DEV_NETMAP */
 
@@ -2370,7 +2370,7 @@ static int ixgbe_clean_rx_irq(struct ixgbe_q_vector *q_vector,
 	 * Same as the txeof routine: only wakeup clients on intr.
 	 */
 	int dummy;
-	if (netmap_rx_irq(adapter->netdev, rx_ring->queue_index, &dummy))
+	if (netmap_rx_irq(rx_ring->netdev, rx_ring->queue_index, &dummy))
 		return true;
 #endif /* DEV_NETMAP */
 
