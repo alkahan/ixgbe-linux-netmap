@@ -683,20 +683,20 @@ static bool ixgbe_clean_tx_irq(struct ixgbe_q_vector *q_vector,
 	unsigned int budget = q_vector->tx.work_limit;
 	unsigned int i = tx_ring->next_to_clean;
 
-#ifdef DEV_NETMAP
-	/*
-	 * In netmap mode, all the work is done in the context
-	 * of the client thread. Interrupt handlers only wake up
-	 * clients, which may be sleeping on individual rings
-	 * or on a global resource for all rings.
-	 */
-	
-	if (netmap_tx_irq(adapter->netdev, tx_ring->queue_index))
-		return true; /* seems to be ignored */
-#endif /* DEV_NETMAP */
-
 	if (test_bit(__IXGBE_DOWN, &adapter->state))
 		return true;
+
+#ifdef DEV_NETMAP
+        /*    
+         * In netmap mode, all the work is done in the context
+         * of the client thread. Interrupt handlers only wake up
+         * clients, which may be sleeping on individual rings
+         * or on a global resource for all rings.
+         */
+      
+        if (netmap_tx_irq(adapter->netdev, tx_ring->queue_index))
+                return 1; /* seems to be ignored */
+#endif /* DEV_NETMAP */
 
 	tx_buffer = &tx_ring->tx_buffer_info[i];
 	tx_desc = IXGBE_TX_DESC(tx_ring, i);
@@ -2236,6 +2236,15 @@ static int ixgbe_clean_rx_irq(struct ixgbe_q_vector *q_vector,
 	int ddp_bytes = 0;
 #endif /* CONFIG_FCOE */
 	u16 cleaned_count = ixgbe_desc_unused(rx_ring);
+
+#ifdef DEV_NETMAP
+        /*    
+         * Same as the txeof routine: only wakeup clients on intr.
+         */
+        int dummy;
+        if (netmap_rx_irq(adapter->netdev, rx_ring->queue_index, &dummy))
+                return true; 
+#endif /* DEV_NETMAP */
 
 	do {
 		union ixgbe_adv_rx_desc *rx_desc;
