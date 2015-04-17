@@ -9882,6 +9882,15 @@ static void __devexit ixgbe_remove(struct pci_dev *pdev)
 	if (!adapter)
 		return;
 
+
+#ifdef DEV_NETMAP
+        /* Ported patch from upstream netmap-next repository
+          https://github.com/luigirizzo/netmap/commit/b7aba79c54aa5ea0a7ec562b82170d8f2069d7de
+          for fixing this issue: https://github.com/luigirizzo/netmap/issues/54 
+        */
+        netmap_detach(netdev);
+#endif /* DEV_NETMAP */
+
 	netdev = adapter->netdev;
 #ifdef HAVE_IXGBE_DEBUG_FS
 	ixgbe_dbg_adapter_exit(adapter);
