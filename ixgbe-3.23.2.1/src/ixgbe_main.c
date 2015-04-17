@@ -9882,6 +9882,7 @@ static void __devexit ixgbe_remove(struct pci_dev *pdev)
 	if (!adapter)
 		return;
 
+	netdev = adapter->netdev;
 
 #ifdef DEV_NETMAP
         /* Ported patch from upstream netmap-next repository
@@ -9891,7 +9892,6 @@ static void __devexit ixgbe_remove(struct pci_dev *pdev)
         netmap_detach(netdev);
 #endif /* DEV_NETMAP */
 
-	netdev = adapter->netdev;
 #ifdef HAVE_IXGBE_DEBUG_FS
 	ixgbe_dbg_adapter_exit(adapter);
 
