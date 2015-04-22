@@ -8945,7 +8945,11 @@ static int ixgbe_set_features(struct net_device *netdev,
 #ifdef USE_CONST_DEV_UC_CHAR
 static int ixgbe_ndo_fdb_add(struct ndmsg *ndm, struct nlattr *tb[],
 			     struct net_device *dev,
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 19, 0)
+			     const unsigned char *addr, u16 vid,
+#else
 			     const unsigned char *addr,
+#endif
 			     u16 flags)
 #else
 static int ixgbe_ndo_fdb_add(struct ndmsg *ndm,
@@ -8961,7 +8965,11 @@ static int ixgbe_ndo_fdb_add(struct ndmsg *ndm,
 	}
 
 #ifdef USE_CONST_DEV_UC_CHAR
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 19, 0)
+	return ndo_dflt_fdb_add(ndm, tb, dev, addr, vid, flags);
+#else
 	return ndo_dflt_fdb_add(ndm, tb, dev, addr, flags);
+#endif
 #else
 	return ndo_dflt_fdb_add(ndm, dev, addr, flags);
 #endif
@@ -9024,7 +9032,11 @@ static int ixgbe_ndo_bridge_getlink(struct sk_buff *skb, u32 pid, u32 seq,
 
 	mode = adapter->bridge_mode;
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 19, 0)
+	return ndo_dflt_bridge_getlink(skb, pid, seq, dev, mode, 0, 0);
+#else
 	return ndo_dflt_bridge_getlink(skb, pid, seq, dev, mode);
+#endif
 }
 #endif /* HAVE_BRIDGE_ATTRIBS */
 #endif /* HAVE_FDB_OPS */
